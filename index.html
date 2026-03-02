@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Gabrielle LeChupette</title>
     <style>
-        /* CUEVA OSCURA */
         body, html {
             margin: 0; padding: 0;
             width: 100%; height: 100%;
@@ -14,21 +13,19 @@
             display: flex; justify-content: center; align-items: center;
         }
 
-        /* HUECO PARA MIRAR DIBUJO */
         #mask {
-            /* RECORTE: 1048x640 para que la linea blanca quede afuera */
             width: 1048px; 
             height: 640px; 
             overflow: hidden;
             position: relative;
             border: 2px solid #111;
             background-color: #000;
-            /* IMPORTANTE: centrar el escalado */
-            transform-origin: center center;
             flex-shrink: 0;
+            display: block;
+            transform-origin: center center;
+            will-change: transform;
         }
 
-        /* DIBUJO QUE SE MUEVE ATRAS */
         #sprite-layer {
             position: absolute;
             background-image: url('https://i.imgur.com/GN17nyJ.jpeg');
@@ -56,28 +53,25 @@
         const FW = 1050; 
         const FH = 642; 
 
-        /* 1. AJUSTE DE PANTALLA (Para que no se corte en vertical) */
         function ajustarEscala() {
-            // Comparamos el ancho de la pantalla con el del visor (1050px)
-            const escalaAncho = window.innerWidth / 1050;
-            // Comparamos el alto disponible con el del visor (642px)
-            const escalaAlto = window.innerHeight / 642;
+            const winW = window.innerWidth;
+            const winH = window.innerHeight;
+            const targetW = winW * 0.95;
+            const targetH = winH * 0.95;
             
-            // Usamos la escala más chica para que entre todo el cuadro
-            let escalaFinal = Math.min(escalaAncho, escalaAlto) * 0.98; 
+            const escalaAncho = targetW / 1050;
+            const escalaAlto = targetH / 642;
             
-            if (escalaFinal < 1) {
-                mask.style.transform = `scale(${escalaFinal})`;
-            } else {
-                mask.style.transform = `scale(1)`;
-            }
+            let escalaFinal = Math.min(escalaAncho, escalaAlto);
+            if (escalaFinal > 1) escalaFinal = 1;
+            
+            mask.style.transform = `scale(${escalaFinal})`;
         }
         
         window.addEventListener('resize', ajustarEscala);
         window.addEventListener('orientationchange', ajustarEscala);
         ajustarEscala();
 
-        /* 2. MOVIMIENTO */
         function moverGabi(clientX) {
             const percent = clientX / window.innerWidth;
             const frameIndex = Math.floor(percent * (TOTAL_FRAMES - 1));
@@ -95,7 +89,65 @@
             moverGabi(e.touches[0].clientX);
         }, { passive: false });
 
-        /* [Tu beso ASCII aquí abajo] */
-    </script>
-</body>
-</html>
+        /*
+                                      .____.
+           xuu$``$$$uuu.
+         . $``$  $$$`$$$
+        dP*$  $  $$$ $$$
+        ?k $  $  $$$ $$$
+         $ $  $  $$$ $$$
+         ":$  $  $$$ $$$
+          N$  $  $$$ $$$
+          $$  $  $$$ $$$
+           $  $  $$$ $$$
+           $  $  $$$ $$$
+           $  $  $$$ $$$
+           $  $  $$$ $$$
+           $  $  $$$ $$$
+           $$#$  $$$ $$$
+           $$'$  $$$ $$$
+           $$`R  $$$ $$$
+           $$$&  $$$ $$$
+           $#*$  $$$ $$$
+           $  $  $$$ @$$
+           $  $  $$$ $$$
+           $  $  $$$ $$$
+           $  $  $B$ $$&.
+           $  $  $D$ $$$$$muL.
+           $  $  $Q$ $$$$$  `"**mu..
+           $  $  $R$ $$$$$    k  `$$*t
+           $  @  $$$ $$$$$    k   $$!4
+           $ x$uu@B8u$NB@$uuuu6...$$X?
+           $ $(`RF`$`````R$ $$5`"""#"R
+           $ $" M$ $     $$ $$$      ?
+           $ $  ?$ $     T$ $$$      $
+           $ $F H$ $     M$ $$K      $  ..
+           $ $L $$$ $$$$R.     "d$$$$Ns.
+           $ $~ $$$     N$$$X      ."    "%2h
+           $ 4k f  $     *$ $$&      R       "iN
+           $ $$ %uz!     tuuR$$:     Buu      ?`:
+           $ $F          $??$8B      | '*Ned*$~L$
+           $ $k          $'@$$$      |$.suu+!' !$
+           $ ?N          $'$$@$      $*`      d:"
+           $ dL..........M.$&$$      5       d"P
+         ..$.^"*I$RR*$C""??77*?      "nu...n*L*
+        '$C"R   ``""!$*@#""` .uor    bu8BUU+!`
+        '*@m@.       *d"     *$Rouxxd"```$
+             R*@mu.           "#$R *$    !
+             *%x. "*L               $     %.
+                "N  `%.      ...u.d!` ..ue$$$o..
+                 @    ".    $*"""" .u$$$$$$$$$$$$beu...
+                8  .mL %  :R`     x$$$$$$$$$$$$$$$$$$$$$$$$$$WmeemeeWc
+               |$e!" "s:k 4      d$N"`"#$$$$$$$$$$$$$$$$$$$$$$$$$$$$$>
+               $$      "N @      $?$    F$$$$$$$$$$$$$$$$$$$$$$$$$$$$>
+               $@       ^%Uu..   R#8buu$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$>
+                          ```""*u$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$>
+                                 #$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$>
+                                  "5$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$>
+                                    `*$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$>
+                                      ^#$$$$$$$$$$$$$$$$$$$$$$$$$$$$$>
+                                         "*$$$$$$$$$$$$$$$$$$$$$$$$$$>
+                                           `"*$$$$$$$$$$$$$$$$$$$$$$$>
+                                               ^!$$$$$$$$$$$$$$$$$$$$>
+                                                   `"#+$$$$$$$$$$$$$$>
+                                                         ""**$$
