@@ -23,24 +23,20 @@
             position: relative;
             border: 2px solid #111;
             background-color: #000;
-            /* Soporte para que se achique en el celu */
-            transform-origin: center;
+            /* IMPORTANTE: centrar el escalado */
+            transform-origin: center center;
+            flex-shrink: 0;
         }
 
         /* DIBUJO QUE SE MUEVE ATRAS */
         #sprite-layer {
             position: absolute;
-            /* LINK DE LA COSA JPEG QUE ME DA IMGUR */
             background-image: url('https://i.imgur.com/GN17nyJ.jpeg');
             background-repeat: no-repeat;
-            
-            /* TAMAÑO DE TODA LA PORQUERÍA (X3) */
             background-size: 7350px 3852px; 
             width: 7350px;
             height: 3852px;
-            
             image-rendering: crisp-edges;
-            /* EMPUJE: Metemos el dibujo 1px adentro de la mascara */
             left: -1px; top: -1px;
             will-change: transform;
         }
@@ -55,54 +51,51 @@
     <script>
         const mask = document.getElementById('mask');
         const layer = document.getElementById('sprite-layer');
-        /* MUCHAS GABIS */
         const TOTAL_FRAMES = 39;
-        /* FILAS  */
         const COLS = 7;
-        /* MEDIDAS  */
         const FW = 1050; 
         const FH = 642; 
 
-        /* 1. AUTO-ESCALADO PARA MÓVIL */
+        /* 1. AJUSTE DE PANTALLA (Para que no se corte en vertical) */
         function ajustarEscala() {
-            const scale = (window.innerWidth * 0.95) / 1050;
-            if (scale < 1) {
-                mask.style.transform = `scale(${scale})`;
+            // Comparamos el ancho de la pantalla con el del visor (1050px)
+            const escalaAncho = window.innerWidth / 1050;
+            // Comparamos el alto disponible con el del visor (642px)
+            const escalaAlto = window.innerHeight / 642;
+            
+            // Usamos la escala más chica para que entre todo el cuadro
+            let escalaFinal = Math.min(escalaAncho, escalaAlto) * 0.98; 
+            
+            if (escalaFinal < 1) {
+                mask.style.transform = `scale(${escalaFinal})`;
             } else {
                 mask.style.transform = `scale(1)`;
             }
         }
+        
         window.addEventListener('resize', ajustarEscala);
+        window.addEventListener('orientationchange', ajustarEscala);
         ajustarEscala();
 
-        /* 2. FUNCIÓN DE MOVIMIENTO UNIFICADA */
+        /* 2. MOVIMIENTO */
         function moverGabi(clientX) {
             const percent = clientX / window.innerWidth;
             const frameIndex = Math.floor(percent * (TOTAL_FRAMES - 1));
-            
             const col = frameIndex % COLS;
             const row = Math.floor(frameIndex / COLS);
-            
             const x = col * FW;
             const y = row * FH;
-            
-            /* MOVER PARA QUE NO SE VEA MUESCA FEA DE ABAJO */
             layer.style.transform = `translate(-${x}px, -${y}px)`;
         }
 
-        /* CUANDO MOVER MANO CON RATON */
         window.addEventListener('mousemove', (e) => moverGabi(e.clientX));
-
-        /* SOPORTE PARA DEDO (CELULAR) */
         window.addEventListener('touchstart', (e) => moverGabi(e.touches[0].clientX), { passive: false });
         window.addEventListener('touchmove', (e) => {
-            e.preventDefault(); // Bloquea el scroll para que Gabi deslice
+            e.preventDefault(); 
             moverGabi(e.touches[0].clientX);
         }, { passive: false });
 
-        /* Te vas a acordar de mí
-        (Aquí va tu arte ASCII del beso que ya tenés)
-        */
+        /* [Tu beso ASCII aquí abajo] */
     </script>
 </body>
 </html>
